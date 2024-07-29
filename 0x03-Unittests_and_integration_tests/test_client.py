@@ -65,8 +65,10 @@ class TestGithubOrgClient(TestCase):
         self.assertEqual(expected, result)
 
 
-@parameterized_class(("org_payload", "repos_payload", "expected_repos",
-                     "apache2_repos"), TEST_PAYLOAD)
+@parameterized_class(
+    ('org_payload', 'repos_payload', 'expected_repos', 'apache2_repos'),
+    TEST_PAYLOAD
+)
 class TestIntegrationGithubOrgClient(TestCase):
     """Test the GithubOrgClient.public_repos method in an integration test"""
 
