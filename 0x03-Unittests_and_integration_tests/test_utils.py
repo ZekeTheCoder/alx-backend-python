@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-""" Parameterize a unit test """
+""" Parameterize and patch """
 import unittest
 from unittest.mock import patch
 from parameterized import parameterized
-from utils import access_nested_map, get_json
+from utils import access_nested_map, get_json, memoize
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -42,3 +42,32 @@ class TestGetJson(unittest.TestCase):
         mock_get.return_value = test_payload
         result = get_json(test_url)
         self.assertEqual(result, test_payload)
+
+
+class TestMemoize(unittest.TestCase):
+    """Test utils.memoize function/decorator"""
+
+    def test_memoize(self):
+        """ Test that when calling a_property twice, the correct result is
+            returned but a_method is only called once using assert_called_once
+        """
+
+        class TestClass:
+            """Test class with memoization"""
+
+            def a_method(self):
+                """Method that returns an instance of memoize class"""
+                return 42
+
+            @memoize
+            def a_property(self):
+                """Method that defines a property instance of memoize"""
+                return self.a_method()
+
+        with patch.object(TestClass, "a_method") as mock:
+            test_class = TestClass()
+
+            test_class.a_property
+            test_class.a_property
+
+            mock.assert_called_once
