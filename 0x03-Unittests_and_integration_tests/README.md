@@ -58,7 +58,7 @@ class TestClass:
 ```
 Use unittest.mock.patch to mock a_method. Test that when calling a_property twice, the correct result is returned but a_method is only called once using assert_called_once.
 
-5. File: test_utils.py - Familiarize yourself with the client.GithubOrgClient class.
+5. File: test_client.py - Familiarize yourself with the client.GithubOrgClient class.
 
 In a new test_client.py file, declare the TestGithubOrgClient(unittest.TestCase) class and implement the test_org method.
 
@@ -72,7 +72,7 @@ Use @parameterized.expand as a decorator to parametrize the test with a couple o
 
 Of course, no external HTTP calls should be made.
 
-6. File: test_utils.py - memoize turns methods into properties. Read up on how to mock a property (see resource).
+6. File: test_client.py - memoize turns methods into properties. Read up on how to mock a property (see resource).
 
 Implement the test_public_repos_url method to unit-test GithubOrgClient._public_repos_url.
 
@@ -80,7 +80,7 @@ Use patch as a context manager to patch GithubOrgClient.org and make it return a
 
 Test that the result of _public_repos_url is the expected one based on the mocked payload.
 
-7. File: test_utils.py - Implement TestGithubOrgClient.test_public_repos to unit-test GithubOrgClient.public_repos.
+7. File: test_client.py - Implement TestGithubOrgClient.test_public_repos to unit-test GithubOrgClient.public_repos.
 
 Use @patch as a decorator to mock get_json and make it return a payload of your choice.
 
@@ -90,7 +90,7 @@ Test that the list of repos is what you expect from the chosen payload.
 
 Test that the mocked property and the mocked get_json was called once.
 
-8. File: test_utils.py - Implement TestGithubOrgClient.test_has_license to unit-test GithubOrgClient.has_license.
+8. File: test_client.py - Implement TestGithubOrgClient.test_has_license to unit-test GithubOrgClient.has_license.
 
 Parametrize the test with the following inputs
 ```
@@ -99,7 +99,7 @@ repo={"license": {"key": "other_license"}}, license_key="my_license"
 ```
 You should also parameterize the expected returned value.
 
-9. File: test_utils.py - We want to test the GithubOrgClient.public_repos method in an integration test. That means that we will only mock code that sends external requests.
+9. File: test_client.py - We want to test the GithubOrgClient.public_repos method in an integration test. That means that we will only mock code that sends external requests.
 
 Create the TestIntegrationGithubOrgClient(unittest.TestCase) class and implement the setUpClass and tearDownClass which are part of the unittest.TestCase API.
 
@@ -114,7 +114,7 @@ Use patch to start a patcher named get_patcher, and use side_effect to make sure
 Implement the tearDownClass class method to stop the patcher.
 
 **Advanced**
-1. File: test_utils.py - Implement the test_public_repos method to test GithubOrgClient.public_repos.
+1. File: test_client.py - Implement the test_public_repos method to test GithubOrgClient.public_repos.
 
 Make sure that the method returns the expected results based on the fixtures.
 
