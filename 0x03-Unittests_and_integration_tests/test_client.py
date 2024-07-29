@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" More patching """
+""" Parameterize """
 
 from unittest import TestCase
 from unittest.mock import patch, Mock, PropertyMock
@@ -51,3 +51,14 @@ class TestGithubOrgClient(TestCase):
             self.assertEqual(result, ["Test value"])
             mock.assert_called_once()
             mock_public_repos_url.assert_called_once()
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False),
+    ])
+    def test_has_license(self, repo, license_key, expected):
+        """Test GithubOrgClient.has_license function"""
+
+        client = GithubOrgClient("Test value")
+        result = client.has_license(repo, license_key)
+        self.assertEqual(expected, result)
