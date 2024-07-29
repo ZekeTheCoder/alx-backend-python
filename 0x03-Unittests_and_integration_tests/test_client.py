@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Integration test: fixtures """
+""" Integration tests """
 
 from unittest import TestCase
 from unittest.mock import patch, Mock, PropertyMock
@@ -88,10 +88,30 @@ class TestIntegrationGithubOrgClient(TestCase):
         cls.get = cls.get_patcher.start()
 
         # Configure side effect for the mock
-        options = {cls.org_payload["repos_url"]: repos_mock}
-        cls.get.side_effect = lambda y: options.get(y, org_mock)
+        cls.get.side_effect = lambda url: {
+            "https://api.github.com/orgs/TestOrg": org_mock,
+            cls.org_payload["repos_url"]: repos_mock
+        }.get(url, Mock())
 
     @classmethod
     def tearDownClass(cls):
         """Stop the patcher"""
         cls.get_patcher.stop()
+
+    def test_public_repos(self):
+        """Test the GithubOrgClient.public_repos method"""
+        client = GithubOrgClient("TestOrg")
+        repos = client.public_repos()
+
+        self.assertEqual(repos, self.expected_repos)
+        self.get.assert_any_call("https://api.github.com/orgs/TestOrg")
+        self.get.assert_any_call(self.org_payload["repos_url"])
+
+    def test_public_repos_with_license(self):
+        """Test the public_repos with license="apache-2.0" method"""
+        client = GithubOrgClient("TestOrg")
+        repos = client.public_repos(license="apache-2.0")
+
+        self.assertEqual(repos, self.apache2_repos)
+        self.get.assert_any_call("https://api.github.com/orgs/TestOrg")
+        self.get.assert_any_call(self.org_payload["repos_url"])
