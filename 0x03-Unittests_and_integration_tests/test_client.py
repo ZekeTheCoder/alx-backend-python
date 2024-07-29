@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Mocking a property """
+""" More patching """
 
 from unittest import TestCase
 from unittest.mock import patch, Mock, PropertyMock
@@ -36,3 +36,18 @@ class TestGithubOrgClient(TestCase):
 
             self.assertEqual(result, mock_org.return_value.get("repos_url"))
             mock_org.assert_called_once
+
+    @patch("client.get_json", return_value=[{"name": "Test value"}])
+    def test_public_repos(self, mock):
+        """Test GithubOrgClient.public_rep function"""
+
+        with patch.object(GithubOrgClient, '_public_repos_url',
+                          new_callable=PropertyMock,
+                          return_value="https://api.github.com/"
+                          ) as mock_public_repos_url:
+            client = GithubOrgClient("Test value")
+            result = client.public_repos()
+
+            self.assertEqual(result, ["Test value"])
+            mock.assert_called_once()
+            mock_public_repos_url.assert_called_once()
